@@ -13,7 +13,7 @@ namespace {
 
     TEST_F(VectorTest,initialized){
         Vector<int> v;
-
+        printf("ok");
     }
 
 }

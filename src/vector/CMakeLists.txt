@@ -1,4 +1,4 @@
-add_library(vector Vector.h vector_implementation.h Vector.cpp)
+add_library(vector Vector.h Vector.cpp)
 
 target_include_directories(vector
         INTERFACE
