@@ -20,7 +20,7 @@ protected:
     T *_elem; //规模、容量、数据区
     void copyFrom(T const *A, Rank lo, Rank hi); //复制数组区间A[lo, hi)
     void expand(); //空间不足时扩容
-//    void shrink(); //装填因子过小时压缩
+    void shrink(); //装填因子过小时压缩
 //    bool bubble ( Rank lo, Rank hi ); //扫描交换
 //    void bubbleSort ( Rank lo, Rank hi ); //起泡排序算法
 //    Rank maxItem ( Rank lo, Rank hi ); //选取最大元素
@@ -53,17 +53,17 @@ public:
 //    { return ( 0 >= _size ) ? -1 : search ( e, 0, _size ); }
 //    Rank search ( T const& e, Rank lo, Rank hi ) const; //有序向量区间查找
 // 可写访问接口
-//    T& operator[] ( Rank r ); //重载下标操作符，可以类似于数组形式引用各元素
+    T &operator[](Rank r); //重载下标操作符，可以类似于数组形式引用各元素
 //    const T& operator[] ( Rank r ) const; //仅限于做右值的重载版本
     Vector<T> &operator=(Vector<T> const &); //重载赋值操作符，以便直接克隆向量
 //    T remove ( Rank r ); //删除秩为r的元素
 //    int remove ( Rank lo, Rank hi ); //删除秩在区间[lo, hi)之内的元素
-//    Rank insert ( Rank r, T const& e ); //插入元素
-//    Rank insert ( T const& e ) { return insert ( _size, e ); } //默认作为末元素插入
+    Rank insert(Rank r, T const &e); //插入元素
+    Rank insert(T const &e) { return insert(_size, e); } //默认作为末元素插入
 //    void sort ( Rank lo, Rank hi ); //对[lo, hi)排序
 //    void sort() { sort ( 0, _size ); } //整体排序
-//    void unsort ( Rank lo, Rank hi ); //对[lo, hi)置乱
-//    void unsort() { unsort ( 0, _size ); } //整体置乱
+    void unsort(Rank lo, Rank hi); //对[lo, hi)置乱
+    void unsort() { unsort(0, _size - 1); } //整体置乱
 //    int deduplicate(); //无序去重
 //    int uniquify(); //有序去重
 // 遍历
@@ -76,10 +76,18 @@ void Vector<T>::expand() {
     if (_size < _capacity) return;
     if (_capacity < DEFAULT_CAPACITY) _capacity = DEFAULT_CAPACITY;
     T *oldElem = _elem;
-    _elem = new T[_capacity << 1];
-    for (int i = 0; i < _size; ++i) {
-        _elem[i] = oldElem;
-    }
+    _elem = new T[_capacity <<= 1];
+    for (int i = 0; i < _size; ++i) _elem[i] = oldElem[i];
+    delete[] oldElem;
+}
+
+template<typename T>
+void Vector<T>::shrink() {
+    if (_capacity < DEFAULT_CAPACITY << 1) return;
+    if (_size << 2 > _capacity) return;
+    T *oldElem = _elem;
+    _elem = new T[_capacity >>= 1];
+    for (int i = 0; i < _size; ++i) _elem[i] = oldElem[i];
     delete[] oldElem;
 }
 
@@ -97,6 +105,28 @@ Vector<T> &Vector<T>::operator=(const Vector<T> &V) {
     if (_elem) delete[] _elem;
     copyFrom(V._elem, 0, V.size());
     return *this;
+}
+
+template<typename T>
+Rank Vector<T>::insert(Rank r, const T &e) {
+    if (r > _size) return -1;
+    expand();
+    for (int i = _size; i > r; --i) _elem[i] = _elem[i - 1];
+    _elem[r] = e;
+    _size++;
+    return r;
+}
+
+template<typename T>
+T &Vector<T>::operator[](Rank r) {
+    if (r < 0 || r >= _size) throw std::out_of_range("Vector out of range");
+    return _elem[r];
+}
+
+template<typename T>
+void Vector<T>::unsort(Rank lo, Rank hi) {
+    T *V = _elem + lo;
+    for (int i = hi - lo; i > 0; --i) std::swap(V[i], V[rand() % i]);
 }
 
 
