@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(test  BaseTest.cpp VectorTest.cpp)
 
 target_link_libraries(test gtest_main)
-target_link_libraries(test my_utils vector)
+target_link_libraries(test my_utils )
 
 include(GoogleTest)
 gtest_discover_tests(test)

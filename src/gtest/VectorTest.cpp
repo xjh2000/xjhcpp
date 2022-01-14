@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "Vector.h"
+#include "../vector/Vector.h"
 
 
 namespace {
@@ -11,7 +11,7 @@ namespace {
     class VectorTest : public testing::Test {
     };
 
-    TEST_F(VectorTest, initialized) {
+    TEST_F(VectorTest, based_operation) {
         Vector<int> v;
         for (int i = 0; i < 100; ++i) v.insert(i);
         ASSERT_EQ(v[0], 0);
@@ -21,8 +21,37 @@ namespace {
         ASSERT_EQ(v[50], 100);
         ASSERT_THROW(v[-1], std::out_of_range);
         ASSERT_THROW(v[101], std::out_of_range);
+        ASSERT_EQ(v.remove(0), 0);
+        ASSERT_EQ(v.remove(0, 60), 60);
+        ASSERT_EQ(v[0], 60);
         v.unsort();
-        printf("ok");
+
+        printf("based_operation pass");
     }
 
+    TEST_F(VectorTest, search) {
+        Vector<int> v;
+        for (int i = 0; i < 100; ++i) v.insert(i);
+        int r = v.find(50);
+        ASSERT_EQ(r, 50);
+        r = v.find(100);
+        ASSERT_EQ(r, -1);
+        r = v.find(-1);
+        ASSERT_EQ(r, -1);
+        printf("search pass");
+    }
+
+    TEST_F(VectorTest, deduplication) {
+        Vector<int> v;
+        for (int i = 0; i < 100; ++i) {
+            v.insert(i);
+            v.insert(i);
+            v.insert(i);
+        }
+        v.deduplicate();
+        for (int i = 0; i < 100; ++i) {
+            ASSERT_EQ(v[i], i);
+        }
+        printf("deduplication pass");
+    }
 }

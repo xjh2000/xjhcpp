@@ -18,9 +18,13 @@ protected:
     Rank _size;
     int _capacity;
     T *_elem; //规模、容量、数据区
+
     void copyFrom(T const *A, Rank lo, Rank hi); //复制数组区间A[lo, hi)
+
     void expand(); //空间不足时扩容
+
     void shrink(); //装填因子过小时压缩
+
 //    bool bubble ( Rank lo, Rank hi ); //扫描交换
 //    void bubbleSort ( Rank lo, Rank hi ); //起泡排序算法
 //    Rank maxItem ( Rank lo, Rank hi ); //选取最大元素
@@ -33,38 +37,59 @@ protected:
 //    void shellSort ( Rank lo, Rank hi ); //希尔排序算法
 public:
 // 构造函数
+
     explicit Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0) //容量为c、规模为s、所有元素初始为v
     {
         _elem = new T[_capacity = c];
         for (_size = 0; _size < s; _size++) _elem[_size] = v;
     } //s<=c
+
     Vector(T const *A, Rank n) { copyFrom(A, 0, n); } //数组整体复制
+
     Vector(T const *A, Rank lo, Rank hi) { copyFrom(A, lo, hi); } //区间
+
     Vector(Vector<T> const &V) { copyFrom(V._elem, 0, V._size); } //向量整体复制
+
     Vector(Vector<T> const &V, Rank lo, Rank hi) { copyFrom(V._elem, lo, hi); } //区间
 // 析构函数
     ~Vector() { delete[] _elem; } //释放内部空间
 // 只读访问接口
+
     [[nodiscard]] Rank size() const { return _size; } //规模
+
     [[nodiscard]] bool empty() const { return !_size; } //判空
-//    Rank find ( T const& e ) const { return find ( e, 0, _size ); } //无序向量整体查找
-//    Rank find ( T const& e, Rank lo, Rank hi ) const; //无序向量区间查找
+
+    Rank find(T const &e) const { return find(e, 0, _size); } //无序向量整体查找
+
+    Rank find(T const &e, Rank lo, Rank hi) const; //无序向量区间查找
+
 //    Rank search ( T const& e ) const //有序向量整体查找
 //    { return ( 0 >= _size ) ? -1 : search ( e, 0, _size ); }
 //    Rank search ( T const& e, Rank lo, Rank hi ) const; //有序向量区间查找
 // 可写访问接口
+
     T &operator[](Rank r); //重载下标操作符，可以类似于数组形式引用各元素
 //    const T& operator[] ( Rank r ) const; //仅限于做右值的重载版本
+
     Vector<T> &operator=(Vector<T> const &); //重载赋值操作符，以便直接克隆向量
-//    T remove ( Rank r ); //删除秩为r的元素
-//    int remove ( Rank lo, Rank hi ); //删除秩在区间[lo, hi)之内的元素
+
+    T remove(Rank r); //删除秩为r的元素
+
+    int remove(Rank lo, Rank hi); //删除秩在区间[lo, hi)之内的元素
+
     Rank insert(Rank r, T const &e); //插入元素
+
     Rank insert(T const &e) { return insert(_size, e); } //默认作为末元素插入
+
 //    void sort ( Rank lo, Rank hi ); //对[lo, hi)排序
 //    void sort() { sort ( 0, _size ); } //整体排序
+
     void unsort(Rank lo, Rank hi); //对[lo, hi)置乱
+
     void unsort() { unsort(0, _size - 1); } //整体置乱
-//    int deduplicate(); //无序去重
+
+    int deduplicate(); //无序去重
+
 //    int uniquify(); //有序去重
 // 遍历
 //    void traverse ( void (* ) ( T& ) ); //遍历（使用函数指针，只读或局部性修改）
@@ -102,7 +127,8 @@ void Vector<T>::copyFrom(const T *A, Rank lo, Rank hi) {
 
 template<typename T>
 Vector<T> &Vector<T>::operator=(const Vector<T> &V) {
-    if (_elem) delete[] _elem;
+    if (&V == this) return *this;
+    delete[] _elem;
     copyFrom(V._elem, 0, V.size());
     return *this;
 }
@@ -127,6 +153,37 @@ template<typename T>
 void Vector<T>::unsort(Rank lo, Rank hi) {
     T *V = _elem + lo;
     for (int i = hi - lo; i > 0; --i) std::swap(V[i], V[rand() % i]);
+}
+
+template<typename T>
+T Vector<T>::remove(Rank r) {
+    T e = _elem[r];
+    remove(r, r + 1);
+    return e;
+}
+
+template<typename T>
+int Vector<T>::remove(Rank lo, Rank hi) {
+    if (lo == hi) return 0;
+    while (hi < _size) _elem[lo++] = _elem[hi++];
+    _size -= hi - lo;
+    shrink();
+    return hi - lo;
+}
+
+template<typename T>
+Rank Vector<T>::find(const T &e, Rank lo, Rank hi) const {
+    while ((lo < hi--) && (e != _elem[hi]));
+    return hi;
+}
+
+template<typename T>
+int Vector<T>::deduplicate() {
+    int oldSize = _size;
+    for (int i = 1; i < _size;) {
+        find(_elem[i], 0, i) >= 0 ? remove(i) : i++;
+    }
+    return oldSize - _size;
 }
 
 
