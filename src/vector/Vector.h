@@ -1,4 +1,5 @@
 #pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 
 
@@ -66,9 +67,16 @@ public:
 //    Rank search ( T const& e ) const //有序向量整体查找
 //    { return ( 0 >= _size ) ? -1 : search ( e, 0, _size ); }
 //    Rank search ( T const& e, Rank lo, Rank hi ) const; //有序向量区间查找
+
+    Rank binSearch(T const &e) const //二分查找
+    { return ( 0 >= _size ) ? -1 : binSearch ( e, 0, _size ); }
+
+    Rank binSearch ( T const& e, Rank lo, Rank hi ) const;
+
 // 可写访问接口
 
     T &operator[](Rank r); //重载下标操作符，可以类似于数组形式引用各元素
+
 //    const T& operator[] ( Rank r ) const; //仅限于做右值的重载版本
 
     Vector<T> &operator=(Vector<T> const &); //重载赋值操作符，以便直接克隆向量
@@ -88,12 +96,17 @@ public:
 
     void unsort() { unsort(0, _size - 1); } //整体置乱
 
-    int deduplicate(); //无序去重
+    int deduplicate(); //无序去重 o（n*n）
 
-//    int uniquify(); //有序去重
+    int uniquify(); //有序去重 o（n*n）
+
+    int uniquify1(); //有序去重高效版o（n）
 // 遍历
-//    void traverse ( void (* ) ( T& ) ); //遍历（使用函数指针，只读或局部性修改）
-//    template <typename VST> void traverse ( VST& ); //遍历（使用函数对象，可全局性修改）
+
+    void traverse(void (* )(T &)); //遍历（使用函数指针，只读或局部性修改）
+
+    template<typename VST>
+    void traverse(VST); //遍历（使用lambda）
 };
 
 template<typename T>
@@ -185,6 +198,56 @@ int Vector<T>::deduplicate() {
     }
     return oldSize - _size;
 }
+
+template<typename T>
+void Vector<T>::traverse(void (*visit)(T &)) {
+    for (int i = 0; i < _size; ++i) {
+        visit(_elem[i]);
+    }
+}
+
+template<typename T>
+template<typename VST>
+void Vector<T>::traverse(VST visit) {
+    for (int i = 0; i < _size; ++i) {
+        visit(_elem[i]);
+    }
+}
+
+template<typename T>
+int Vector<T>::uniquify() {
+    int oldSize = _size;
+    int i = 1;
+    while (i < _size) _elem[i - 1] == _elem[i] ? remove(i) : i++;
+    return oldSize - _size;
+}
+
+template<typename T>
+int Vector<T>::uniquify1() {
+    int i = 0, j = 0;
+    while (++j < _size) {
+        if (_elem[i] != _elem[j])
+            _elem[++i] = _elem[j];
+    }
+    _size = ++i;
+    shrink();
+    return j - i;
+}
+
+template<typename T>
+Rank Vector<T>::binSearch(const T &e, Rank lo, Rank hi) const {
+    while (lo < hi) {
+        Rank mid = (lo + hi) >> 1;
+        if (_elem[mid] > e) lo = mid + 1;
+        else if (_elem[mid] < e) hi = mid;
+        else return mid;
+    }
+    return -1;
+}
+
+
+
+
 
 
 //Vector
