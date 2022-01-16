@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "../vector/Vector.h"
+#include "Vector.h"
 
 namespace {
 
@@ -40,8 +40,9 @@ namespace {
         ASSERT_EQ(r, -1);
         r = v.find(-1);
         ASSERT_EQ(r, -1);
+        v.binSearch(50);
         ASSERT_EQ(v.binSearch(50), 50);
-        ASSERT_EQ(v.binSearch(100), -1);
+        ASSERT_EQ(v.binSearch(100), 99);
         ASSERT_EQ(v.binSearch(-1), -1);
 
         printf("search pass");

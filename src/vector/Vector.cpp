@@ -4,3 +4,9 @@
 
 #include "Vector.h"
 
+namespace MyVector{
+    void test(){
+        Vector<int> a;
+    }
+}
+

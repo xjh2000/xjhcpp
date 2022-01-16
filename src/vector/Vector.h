@@ -10,6 +10,9 @@
 #pragma once
 
 
+#include <utility>
+#include <stdexcept>
+
 using Rank = int; //秩
 #define DEFAULT_CAPACITY  3 //默认的初始容量（实际应用中可设置为更大）
 
@@ -238,11 +241,9 @@ template<typename T>
 Rank Vector<T>::binSearch(const T &e, Rank lo, Rank hi) const {
     while (lo < hi) {
         Rank mid = (lo + hi) >> 1;
-        if (_elem[mid] > e) lo = mid + 1;
-        else if (_elem[mid] < e) hi = mid;
-        else return mid;
+        e < _elem[mid]  ? hi = mid : lo = mid + 1;
     }
-    return -1;
+     return --lo;
 }
 
 
