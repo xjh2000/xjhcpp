@@ -4,10 +4,25 @@
 
 #include "gtest/gtest.h"
 #include "Vector.h"
+#include "random"
 
 namespace {
 
     class VectorTest : public testing::Test {
+    public:
+
+        std::uniform_int_distribution<int> dist;
+        std::default_random_engine e;
+
+        VectorTest() {
+            // 以随机值播种，若可能
+            std::random_device r;
+            // 选择 1 与 6 间的随机数
+            std::default_random_engine e1(r());
+            e = e1;
+            std::uniform_int_distribution<int> uniform_dist(1, 10000);
+            dist = uniform_dist;
+        }
     };
 
     TEST_F(VectorTest, based_operation) {
@@ -84,5 +99,27 @@ namespace {
         printf("deduplication pass");
     }
 
+    TEST_F(VectorTest, bubbleSort) {
+        Vector<int> v;
+        for (int i = 0; i < 100; ++i) v.insert(dist(e));
+        v.bubbleSort(0, v.size());
+        ASSERT_EQ(v.disordered(), 0);
+        printf("bubbleSort pass");
+    }
 
+    TEST_F(VectorTest, selectSort) {
+        Vector<int> v;
+        for (int i = 0; i < 100; ++i) v.insert(dist(e));
+        v.selectionSort(0, v.size());
+        ASSERT_EQ(v.disordered(), 0);
+        printf("selectSort pass");
+    }
+
+    TEST_F(VectorTest, mergeSort) {
+        Vector<int> v;
+        for (int i = 0; i < 100; ++i) v.insert(dist(e));
+        v.mergeSort(0, v.size());
+        ASSERT_EQ(v.disordered(), 0);
+        printf("mergeSort pass");
+    }
 }

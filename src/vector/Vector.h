@@ -29,12 +29,7 @@ protected:
 
     void shrink(); //装填因子过小时压缩
 
-//    bool bubble ( Rank lo, Rank hi ); //扫描交换
-//    void bubbleSort ( Rank lo, Rank hi ); //起泡排序算法
-//    Rank maxItem ( Rank lo, Rank hi ); //选取最大元素
-//    void selectionSort ( Rank lo, Rank hi ); //选择排序算法
-//    void merge ( Rank lo, Rank mi, Rank hi ); //归并算法
-//    void mergeSort ( Rank lo, Rank hi ); //归并排序算法
+
 //    void heapSort ( Rank lo, Rank hi ); //堆排序（稍后结合完全堆讲解）
 //    Rank partition ( Rank lo, Rank hi ); //轴点构造算法
 //    void quickSort ( Rank lo, Rank hi ); //快速排序算法
@@ -72,15 +67,15 @@ public:
 //    Rank search ( T const& e, Rank lo, Rank hi ) const; //有序向量区间查找
 
     Rank binSearch(T const &e) const //二分查找
-    { return ( 0 >= _size ) ? -1 : binSearch ( e, 0, _size ); }
+    { return (0 >= _size) ? -1 : binSearch(e, 0, _size); }
 
-    Rank binSearch ( T const& e, Rank lo, Rank hi ) const;
+    Rank binSearch(T const &e, Rank lo, Rank hi) const;
 
 // 可写访问接口
 
     T &operator[](Rank r); //重载下标操作符，可以类似于数组形式引用各元素
 
-//    const T& operator[] ( Rank r ) const; //仅限于做右值的重载版本
+    const T &operator[](Rank r) const; //仅限于做右值的重载版本
 
     Vector<T> &operator=(Vector<T> const &); //重载赋值操作符，以便直接克隆向量
 
@@ -92,9 +87,6 @@ public:
 
     Rank insert(T const &e) { return insert(_size, e); } //默认作为末元素插入
 
-//    void sort ( Rank lo, Rank hi ); //对[lo, hi)排序
-//    void sort() { sort ( 0, _size ); } //整体排序
-
     void unsort(Rank lo, Rank hi); //对[lo, hi)置乱
 
     void unsort() { unsort(0, _size - 1); } //整体置乱
@@ -104,6 +96,24 @@ public:
     int uniquify(); //有序去重 o（n*n）
 
     int uniquify1(); //有序去重高效版o（n）
+
+    int disordered(); // 返回向量中逆序相邻元素的总个数
+
+
+// 排序
+
+    bool bubble(Rank lo, Rank hi); //扫描交换 有序返回 true
+
+    void bubbleSort(Rank lo, Rank hi); //起泡排序算法
+
+    Rank maxItem(Rank lo, Rank hi); //选取最大元素
+
+    void selectionSort(Rank lo, Rank hi); //选择排序算法
+
+    void merge(Rank lo, Rank mi, Rank hi); //归并算法
+
+    void mergeSort(Rank lo, Rank hi); //归并排序算法
+
 // 遍历
 
     void traverse(void (* )(T &)); //遍历（使用函数指针，只读或局部性修改）
@@ -157,6 +167,12 @@ Rank Vector<T>::insert(Rank r, const T &e) {
     _elem[r] = e;
     _size++;
     return r;
+}
+
+template<typename T>
+const T &Vector<T>::operator[](Rank r) const {
+    if (r < 0 || r >= _size) throw std::out_of_range("Vector out of range");
+    return _elem[r];
 }
 
 template<typename T>
@@ -241,9 +257,79 @@ template<typename T>
 Rank Vector<T>::binSearch(const T &e, Rank lo, Rank hi) const {
     while (lo < hi) {
         Rank mid = (lo + hi) >> 1;
-        e < _elem[mid]  ? hi = mid : lo = mid + 1;
+        e < _elem[mid] ? hi = mid : lo = mid + 1;
     }
-     return --lo;
+    return --lo;
+}
+
+template<typename T>
+int Vector<T>::disordered() {
+    int count = 0;
+    for (int i = 1; i < _size; ++i) {
+        if (_elem[i - 1] > _elem[i]) ++count;
+    }
+    return count;
+}
+
+template<typename T>
+void Vector<T>::bubbleSort(Rank lo, Rank hi) {
+    while (!bubble(lo, hi--));
+}
+
+template<typename T>
+bool Vector<T>::bubble(Rank lo, Rank hi) {
+    bool status = true;
+    for (int i = lo + 1; i < hi; ++i) {
+        if (_elem[i - 1] > _elem[i]) {
+            std::swap(_elem[i - 1], _elem[i]);
+            status = false;
+        }
+    }
+    return status;
+}
+
+template<typename T>
+void Vector<T>::selectionSort(Rank lo, Rank hi) {
+    for (int i = hi; i > lo; --i) {
+        std::swap(_elem[i - 1], _elem[maxItem(lo, i)]);
+    }
+}
+
+template<typename T>
+Rank Vector<T>::maxItem(Rank lo, Rank hi) {
+    Rank max = lo;
+    for (int i = lo; i < hi; ++i) {
+        if (_elem[i] > _elem[max]) {
+            max = i;
+        }
+    }
+    return max;
+}
+
+template<typename T>
+void Vector<T>::mergeSort(Rank lo, Rank hi) {
+    if (hi - lo < 2) return;
+    Rank mi = (lo + hi) / 2;
+    mergeSort(lo, mi);
+    mergeSort(mi, hi);
+    merge(lo, mi, hi);
+}
+
+template<typename T>
+void Vector<T>::merge(Rank lo, Rank mi, Rank hi) {
+    T *A = _elem + lo;
+    Rank lb = mi - lo;
+    T *B = new T[lb];
+    T *C = _elem + mi;
+    Rank lc = hi - mi;
+    for (int i = 0; i < lb; ++i) {
+        B[i] = A[i];
+    }
+    for (int a = 0, b = 0, c = 0; (b < lb) || (c < lc);) {
+        if ((b < lb) && ((c >= lc) || (B[b] <= C[c])))A[a++] = B[b++];
+        if ((c < lc) && ((b >= lb) || (C[c] < B[b])))A[a++] = C[c++];
+    }
+    delete[] B;
 }
 
 
