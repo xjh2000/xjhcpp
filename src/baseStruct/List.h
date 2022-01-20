@@ -24,11 +24,7 @@ protected:
 
     void copyNodes(ListNodePosi<T>, int); //复制列表中自位置p起的n项
 
-//    ListNodePosi<T> merge ( ListNodePosi<T>, int, List<T> &, ListNodePosi<T>, int ); //归并
-//    void mergeSort ( ListNodePosi<T> &, int ); //对从p开始连续的n个节点归并排序
-//    void selectionSort ( ListNodePosi<T>, int ); //对从p开始连续的n个节点选择排序
-//    void insertionSort ( ListNodePosi<T>, int ); //对从p开始连续的n个节点插入排序
-//    void radixSort(ListNodePosi<T>, int); //对从p开始连续的n个节点基数排序
+
 
 public:
 // 构造函数
@@ -58,14 +54,20 @@ public:
     bool valid(ListNodePosi<T> p) //判断位置p是否对外合法
     { return p && (trailer != p) && (header != p); } //将头、尾节点等同于NULL
 
-//    ListNodePosi<T> find ( T const& e ) const //无序列表查找
-//    { return find ( e, _size, trailer ); }
-//    ListNodePosi<T> find ( T const& e, int n, ListNodePosi<T> p ) const; //无序区间查找
-//    ListNodePosi<T> search ( T const& e ) const //有序列表查找
-//    { return search ( e, _size, trailer ); }
-//    ListNodePosi<T> search ( T const& e, int n, ListNodePosi<T> p ) const; //有序区间查找
-//    ListNodePosi<T> selectMax ( ListNodePosi<T> p, int n ); //在p及其n-1个后继中选出最大者
-//    ListNodePosi<T> selectMax() { return selectMax ( header->succ, _size ); } //整体最大者
+    ListNodePosi<T> find(T const &e) const //无序列表查找
+    { return find(e, _size, trailer); }
+
+    ListNodePosi<T> find(T const &e, int n, ListNodePosi<T> p) const; //无序区间查找
+
+    ListNodePosi<T> search(T const &e) const //有序列表查找
+    { return search(e, _size, trailer); }
+
+    ListNodePosi<T> search(T const &e, int n, ListNodePosi<T> p) const; //有序区间查找
+
+    ListNodePosi<T> selectMax(ListNodePosi<T> p, int n); //在p及其n-1个后继中选出最大者
+
+    ListNodePosi<T> selectMax() { return selectMax(header->succ, _size); } //整体最大者
+
 // 可写访问接口
 
     ListNodePosi<T> insertAsFirst(T const &e); //将e当作首节点插入
@@ -79,15 +81,26 @@ public:
     T remove(ListNodePosi<T> p); //删除合法位置p处的节点,返回被删除节点
 
 //    void merge ( List<T> & L ) { merge ( header->succ, _size, L, L.header->succ, L._size ); } //全列表归并
-//    void sort ( ListNodePosi<T> p, int n ); //列表区间排序
-//    void sort() { sort ( first(), _size ); } //列表整体排序
-//    int deduplicate(); //无序去重
-//    int uniquify(); //有序去重
-//    void reverse(); //前后倒置（习题）
+// 排序
+//    ListNodePosi<T> merge ( ListNodePosi<T>, int, List<T> &, ListNodePosi<T>, int ); //归并
+//    void mergeSort ( ListNodePosi<T> &, int ); //对从p开始连续的n个节点归并排序
+
+//    void selectionSort ( ListNodePosi<T>, int ); //对从p开始连续的n个节点选择排序
+
+    void insertionSort(ListNodePosi<T>, int); //对从p开始连续的n个节点插入排序
+
+//    void radixSort(ListNodePosi<T>, int); //对从p开始连续的n个节点基数排序
+
+    int deduplicate(); //无序去重
+
+    int uniquify(); //有序去重
+
+    void reverse(); //前后倒置（习题）
 // 遍历
-//    void traverse ( void (* ) ( T& ) ); //遍历，依次实施visit操作（函数指针，只读或局部性修改）
-//    template <typename VST> //操作器
-//    void traverse ( VST& ); //遍历，依次实施visit操作（函数对象，可全局性修改）
+    void traverse(void (* )(T &)); //遍历，依次实施visit操作（函数指针，只读或局部性修改）
+
+    template<typename VST>
+    void traverse(VST); //遍历，依次实施visit操作（函数对象，可全局性修改）
 };
 
 template<typename T>
@@ -185,6 +198,110 @@ T List<T>::remove(ListNodePosi<T> p) {
     return e;
 }
 
+template<typename T>
+int List<T>::deduplicate() {
+    if (_size < 2) return 0;
+    int oldSize = _size;
+    ListNodePosi<T> p = first();
+    int r = 0;
+    while (r < _size) {
+        ListNodePosi<T> q = find(p->data, r, p);
+        q ? remove(q) : r++;
+        p = p->succ;
+    }
+
+    return oldSize - _size;
+}
+
+template<typename T>
+ListNodePosi<T> List<T>::find(const T &e, int n, ListNodePosi<T> p) const {
+    while (n-- > 0) {
+        p = p->pred;
+        if (p->data == e) {
+            return p;
+        }
+    }
+    return nullptr;
+}
+
+template<typename T>
+void List<T>::reverse() {
+    if (_size < 2) return;
+    ListNodePosi<T> p1 = trailer;
+    ListNodePosi<T> p2 = p1->pred;
+    ListNodePosi<T> p3 = p2->pred;
+    trailer->pred = nullptr;
+    trailer->succ = p2;
+    header = trailer;
+    while (p3 != nullptr) {
+        p2->pred = p1;
+        p2->succ = p3;
+        p1 = p2;
+        p2 = p3;
+        p3 = p3->pred;
+    }
+    p2->pred = p1;
+    p2->succ = nullptr;
+    trailer = p2;
+}
+
+
+template<typename T>
+template<typename VST>
+void List<T>::traverse(VST lambda) {
+    ListNodePosi<T> p = header;
+    while ((p = p->succ) != trailer) lambda(p);
+}
+
+template<typename T>
+void List<T>::traverse(void (*f)(T &)) {
+    ListNodePosi<T> p = header;
+    while ((p = p->succ) != trailer) f(p);
+}
+
+template<typename T>
+int List<T>::uniquify() {
+    if (_size < 2) return 0;
+    int oldSize = _size;
+    ListNodePosi<T> p = first();
+    ListNodePosi<T> q;
+    while (trailer != (q = p->succ)) {
+        if (q->data != p->data) {
+            p = q;
+        } else {
+            remove(q);
+        }
+    }
+    return oldSize - _size;
+}
+
+template<typename T>
+ListNodePosi<T> List<T>::search(const T &e, int n, ListNodePosi<T> p) const {
+    while (0 < n--) {
+        p = p->pred;
+        if (p->data <= e)return p;
+    }
+    return p->pred;
+}
+
+template<typename T>
+ListNodePosi<T> List<T>::selectMax(ListNodePosi<T> p, int n) {
+    ListNodePosi<T> max = p;
+    while (0 < n--) {
+        if (p->data > max->data) max = p;
+        p = p->succ;
+    }
+    return max;
+}
+
+template<typename T>
+void List<T>::insertionSort(ListNodePosi<T> p, int n) {
+    int r = 0;
+    while (r < n) {
+        ListNodePosi<T> q = search(p->data, r++, p);
+        insert(q, remove((p = p->succ)->pred));
+    }
+}
 
 
 //List

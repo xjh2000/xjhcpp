@@ -38,7 +38,6 @@ namespace {
         ASSERT_EQ(head.succ->succ->data, 30);
         ASSERT_EQ(tail.pred->data, 30);
         ASSERT_EQ(tail.pred->pred->data, 10);
-
         printf("ListNode pass");
     }
 
@@ -63,6 +62,80 @@ namespace {
         ASSERT_EQ(list3.size(), 2);
 
         printf("BaseOperate pass");
+    }
+
+    TEST_F(ListTest, Deduplication) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) {
+            list.insertAsLast(i);
+            list.insertAsLast(i);
+            list.insertAsLast(i);
+        }
+        ASSERT_EQ(list.deduplicate(), 200);
+        ASSERT_EQ(list[0], 0);
+        ASSERT_EQ(list[50], 50);
+        ASSERT_EQ(list[99], 99);
+        printf("Deduplication pass");
+    }
+
+    TEST_F(ListTest, Uniquify) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) {
+            list.insertAsLast(i);
+            list.insertAsLast(i);
+            list.insertAsLast(i);
+        }
+        ASSERT_EQ(list.uniquify(), 200);
+        ASSERT_EQ(list[0], 0);
+        ASSERT_EQ(list[50], 50);
+        ASSERT_EQ(list[99], 99);
+        printf("uniquify pass");
+    }
+
+    TEST_F(ListTest, Reverse) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsLast(i);
+        list.reverse();
+        ASSERT_EQ(list[0], 99);
+        ASSERT_EQ(list[50], 49);
+        ASSERT_EQ(list[99], 0);
+        printf("Reverse pass");
+    }
+
+    TEST_F(ListTest, Traverse) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsLast(i);
+        list.traverse([&](ListNodePosi<int> node) { node->data++; });
+        ASSERT_EQ(list[0], 1);
+        ASSERT_EQ(list[50], 51);
+        ASSERT_EQ(list[99], 100);
+        printf("Traverse pass");
+    }
+
+    TEST_F(ListTest, Search) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsLast(i);
+        ASSERT_EQ(list.search(0)->data, 0);
+        ASSERT_EQ(list.search(50)->data, 50);
+        ASSERT_EQ(list.search(99)->data, 99);
+        printf("Search pass");
+    }
+
+    TEST_F(ListTest, SelectMax) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsLast(i);
+        ASSERT_EQ(list.selectMax()->data, 99);
+        printf("SelectMax pass");
+    }
+
+    TEST_F(ListTest, InsertionSort) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsFirst(i);
+        list.insertionSort(list.first(), list.size());
+        for (int i = 0; i < 100; ++i) {
+            ASSERT_EQ(list[i], i);
+        }
+        printf("InsertionSort pass");
     }
 }
 #pragma clang diagnostic pop
