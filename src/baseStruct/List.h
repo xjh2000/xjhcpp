@@ -80,12 +80,16 @@ public:
 
     T remove(ListNodePosi<T> p); //删除合法位置p处的节点,返回被删除节点
 
-//    void merge ( List<T> & L ) { merge ( header->succ, _size, L, L.header->succ, L._size ); } //全列表归并
-// 排序
-//    ListNodePosi<T> merge ( ListNodePosi<T>, int, List<T> &, ListNodePosi<T>, int ); //归并
-//    void mergeSort ( ListNodePosi<T> &, int ); //对从p开始连续的n个节点归并排序
 
-//    void selectionSort ( ListNodePosi<T>, int ); //对从p开始连续的n个节点选择排序
+// 排序
+
+    void merge(List<T> &L) { merge(header->succ, _size, L, L.header->succ, L._size); } //全列表归并
+
+    ListNodePosi<T> merge(ListNodePosi<T>&, int, List<T> &, ListNodePosi<T>, int); //归并
+
+    void mergeSort(ListNodePosi<T>&, int); //对从p开始连续的n个节点归并排序
+
+    void selectionSort(ListNodePosi<T>, int); //对从p开始连续的n个节点选择排序
 
     void insertionSort(ListNodePosi<T>, int); //对从p开始连续的n个节点插入排序
 
@@ -301,6 +305,45 @@ void List<T>::insertionSort(ListNodePosi<T> p, int n) {
         ListNodePosi<T> q = search(p->data, r++, p);
         insert(q, remove((p = p->succ)->pred));
     }
+}
+
+template<typename T>
+void List<T>::selectionSort(ListNodePosi<T> p, int n) {
+    ListNodePosi<T> q = p;
+    for (int i = 0; i < n - 1; ++i) {
+        q = q->succ;
+    }
+    for (; n > 1; n--) {
+        std::swap(q->data, selectMax(p, n)->data);
+        q = q->pred;
+    }
+}
+
+template<typename T>
+ListNodePosi<T> List<T>::merge(ListNodePosi<T>& p, int n, List<T> &L, ListNodePosi<T> q, int m) {
+    ListNodePosi<T> pp = p->pred;
+    while (m > 0) {
+        if (n > 0 && p->data <= q->data) {
+            if (q == (p = p->succ)) break;
+            n--;
+        } else {
+            insert(L.remove((q = q->succ)->pred), p);
+            m--;
+        }
+    }
+
+    return p = pp->succ;
+}
+
+template<typename T>
+void List<T>::mergeSort(ListNodePosi<T>& p, int n) {
+    if (n < 2) return;
+    int mid = n >> 1;
+    ListNodePosi<T> q = p;
+    for (int i = 0; i < mid; ++i) q = q->succ;
+    mergeSort(p, mid);
+    mergeSort(q, n - mid);
+    merge(p, mid, *this, q, n - mid);
 }
 
 

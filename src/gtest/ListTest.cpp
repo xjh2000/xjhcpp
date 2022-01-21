@@ -137,5 +137,27 @@ namespace {
         }
         printf("InsertionSort pass");
     }
+
+
+    TEST_F(ListTest, selectionSort) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsFirst(i);
+        list.selectionSort(list.first(), list.size());
+        for (int i = 0; i < 100; ++i) {
+            ASSERT_EQ(list[i], i);
+        }
+        printf("selectionSort pass");
+    }
+
+    TEST_F(ListTest, mergeSort) {
+        List<int> list;
+        for (int i = 0; i < 100; ++i) list.insertAsFirst(i);
+        ListNodePosi<int> first = list.first();
+        list.mergeSort(first, list.size());
+        for (int i = 0; i < 100; ++i) {
+            ASSERT_EQ(list[i], i);
+        }
+        printf("mergeSort pass");
+    }
 }
 #pragma clang diagnostic pop
