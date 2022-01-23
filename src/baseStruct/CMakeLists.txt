@@ -1,4 +1,4 @@
-add_library(baseStruct Vector.h Vector_util.h main.cpp ListNode.h List.h)
+add_library(baseStruct Vector.h Vector_util.h main.cpp ListNode.h List.h BinNode.h BinTree.h)
 
 target_include_directories(baseStruct
         INTERFACE
