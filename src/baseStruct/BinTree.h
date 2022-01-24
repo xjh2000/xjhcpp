@@ -39,7 +39,9 @@ public:
     int remove(BinNodePosi<T>); //子树删除
 
     int removeAt(BinNodePosi<T>); //释放子树空间
-//    BinTree<T>* secede ( BinNodePosi<T> ); //子树分离
+
+    BinTree<T>* secede ( BinNodePosi<T> ); //子树分离
+
 //    template <typename VST> //操作器
 //    void travLevel ( VST& visit ) { if ( _root ) _root->travLevel ( visit ); } //层次遍历
 //    template <typename VST> //操作器
@@ -128,6 +130,18 @@ BinNodePosi<T> BinTree<T>::attach(BinNodePosi<T> x, BinTree<T> &S) {
     S._size = 0;
     return x;
 
+}
+
+template<typename T>
+BinTree<T> *BinTree<T>::secede(BinNodePosi<T> x) {
+    FromParentTo(*x) = nullptr;
+    updateHeightAbove(x);
+    x->parent = nullptr;
+
+    BinTree<T> *S = new BinTree<T>;
+    S->_root = x;
+    S->_size = x->size();
+    return S;
 }
 
 

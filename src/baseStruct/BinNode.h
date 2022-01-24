@@ -3,6 +3,28 @@
 //
 
 #pragma once
+#include "vector"
+
+
+/******************************************************************************************
+ * BinNode状态与性质的判断
+ ******************************************************************************************/
+#define IsRoot(x) ( ! ( (x).parent ) )
+#define IsLChild(x) ( ! IsRoot(x) && ( & (x) == (x).parent->lc ) )
+#define IsRChild(x) ( ! IsRoot(x) && ( & (x) == (x).parent->rc ) )
+#define HasParent(x) ( ! IsRoot(x) )
+#define HasLChild(x) ( (x).lc )
+#define HasRChild(x) ( (x).rc )
+#define HasChild(x) ( HasLChild(x) || HasRChild(x) ) //至少拥有一个孩子
+#define HasBothChild(x) ( HasLChild(x) && HasRChild(x) ) //同时拥有两个孩子
+#define IsLeaf(x) ( ! HasChild(x) )
+
+/******************************************************************************************
+ * 与BinNode具有特定关系的节点及指针
+ ******************************************************************************************/
+#define sibling(p) ( IsLChild( * (p) ) ? (p)->parent->rc : (p)->parent->lc ) /*兄弟*/
+#define uncle(x) ( sibling( (x)->parent ) ) /*叔叔*/
+#define FromParentTo(x) ( IsRoot(x) ? _root : ( IsLChild(x) ? (x).parent->lc : (x).parent->rc ) )
 
 
 #if defined( DSA_REDBLACK )
@@ -34,8 +56,9 @@ struct BinNode { //二叉树节点模板类
     explicit BinNode(T e, BinNodePosi<T> p = nullptr, BinNodePosi<T> lc = nullptr, BinNodePosi<T> rc = nullptr,
                      int h = 0, int l = 1, RBColor c = RB_RED) :
             data(e), parent(p), lc(lc), rc(rc), height(h), npl(l), color(c) {}
+
 // 操作接口
-//    int size(); //统计当前节点后代总数，亦即以其为根的子树的规模
+    int size(); //统计当前节点后代总数，亦即以其为根的子树的规模
 
     BinNodePosi<T> insertAsLC(T const &); //作为当前节点的左孩子插入新节点
 
@@ -43,7 +66,15 @@ struct BinNode { //二叉树节点模板类
 
 //    BinNodePosi<T> succ(); //取当前节点的直接后继
 //    template <typename VST> void travLevel ( VST& ); //子树层次遍历
-//    template <typename VST> void travPre ( VST& ); //子树先序遍历
+
+    template <typename VST> void travPre_R ( BinNodePosi<T> x, VST visit); //子树先序遍历递归
+
+    template <typename VST> void travIn_R ( BinNodePosi<T> x, VST visit ); //子树中序遍历递归
+
+    template <typename VST> void travPost_R ( BinNodePosi<T> x, VST visit ); //子树中序遍历递归
+
+    template <typename VST> void travPre ( VST visit ); //子树先序遍历迭代
+
 //    template <typename VST> void travIn ( VST& ); //子树中序遍历
 //    template <typename VST> void travPost ( VST& ); //子树后序遍历
 // 比较器、判等器（各列其一，其余自行补充）
@@ -68,24 +99,69 @@ BinNodePosi<T> BinNode<T>::insertAsLC(const T &e) {
     return lc = new BinNode<T>(e, this);
 }
 
+template<typename T>
+int BinNode<T>::size() {
+    std::vector<BinNodePosi<T>> v;
+    int n = 1;
+    v.push_back(this);
+    while (v.size() != 0) {
+        BinNodePosi<T> x = v.back();
+        v.pop_back();
+        if (x->lc != nullptr) {
+            v.push_back(x->lc);
+            n++;
+        }
+        if (x->rc != nullptr) {
+            v.push_back(x->rc);
+            n++;
+        }
+    }
+    return n;
+}
 
-/******************************************************************************************
- * BinNode状态与性质的判断
- ******************************************************************************************/
-#define IsRoot(x) ( ! ( (x).parent ) )
-#define IsLChild(x) ( ! IsRoot(x) && ( & (x) == (x).parent->lc ) )
-#define IsRChild(x) ( ! IsRoot(x) && ( & (x) == (x).parent->rc ) )
-#define HasParent(x) ( ! IsRoot(x) )
-#define HasLChild(x) ( (x).lc )
-#define HasRChild(x) ( (x).rc )
-#define HasChild(x) ( HasLChild(x) || HasRChild(x) ) //至少拥有一个孩子
-#define HasBothChild(x) ( HasLChild(x) && HasRChild(x) ) //同时拥有两个孩子
-#define IsLeaf(x) ( ! HasChild(x) )
+template<typename T>
+template<typename VST>
+void BinNode<T>::travPre_R(BinNodePosi<T> x, VST visit) {
+    if (!x) return;
+    visit(x->data);
+    travPre_R(x->lc, visit);
+    travPre_R(x->rc, visit);
+}
 
-/******************************************************************************************
- * 与BinNode具有特定关系的节点及指针
- ******************************************************************************************/
-#define sibling(p) ( IsLChild( * (p) ) ? (p)->parent->rc : (p)->parent->lc ) /*兄弟*/
-#define uncle(x) ( sibling( (x)->parent ) ) /*叔叔*/
-#define FromParentTo(x) ( IsRoot(x) ? _root : ( IsLChild(x) ? (x).parent->lc : (x).parent->rc ) )
+template<typename T>
+template<typename VST>
+void BinNode<T>::travIn_R(BinNodePosi<T> x, VST visit) {
+    if (!x) return;
+    travIn_R(x->lc, visit);
+    visit(x->data);
+    travIn_R(x->rc, visit);
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travPost_R(BinNodePosi<T> x, VST visit) {
+    if (!x) return;
+    travPost_R(x->lc, visit);
+    travPost_R(x->rc, visit);
+    visit(x->data);
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travPre(VST visit) {
+    std::vector<BinNodePosi<T>> S;
+    BinNodePosi<T> x = this;
+    while (true) {
+        while (x){
+            visit(x->data);
+            if (HasRChild(*x)) S.push_back(x->rc);
+            x = x->lc;
+        }
+        if (S.empty()) break;
+        x = S.back();
+        S.pop_back();
+    }
+}
+
+
 
