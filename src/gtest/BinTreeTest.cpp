@@ -72,6 +72,23 @@ namespace {
         std::getline(ss, s);
         ASSERT_STRCASEEQ(s.c_str(), "4213657");
         ss.clear();
+        node.travIn([&](int data) { ss << data; });
+        std::getline(ss, s);
+        ASSERT_STRCASEEQ(s.c_str(), "1234567");
+        ss.clear();
+        node.travIn_1([&](int data) { ss << data; });
+        std::getline(ss, s);
+        ASSERT_STRCASEEQ(s.c_str(), "1234567");
+        ss.clear();
+        node.travPost([&](int data) { ss << data; });
+        std::getline(ss, s);
+        ASSERT_STRCASEEQ(s.c_str(), "1325764");
+        ss.clear();
+        node.travLevel([&](int data) { ss << data; });
+        std::getline(ss, s);
+        ASSERT_STRCASEEQ(s.c_str(), "4261357");
+        ss.clear();
+
         printf("traver pass");
     }
 

@@ -4,7 +4,7 @@
 
 #pragma once
 #include "vector"
-
+#include "deque"
 
 /******************************************************************************************
  * BinNode状态与性质的判断
@@ -64,8 +64,9 @@ struct BinNode { //二叉树节点模板类
 
     BinNodePosi<T> insertAsRC(T const &); //作为当前节点的右孩子插入新节点
 
-//    BinNodePosi<T> succ(); //取当前节点的直接后继
-//    template <typename VST> void travLevel ( VST& ); //子树层次遍历
+    BinNodePosi<T> succ(); //取当前节点的直接后继
+
+    template <typename VST> void travLevel ( VST visit ); //子树层次遍历
 
     template <typename VST> void travPre_R ( BinNodePosi<T> x, VST visit); //子树先序遍历递归
 
@@ -75,8 +76,12 @@ struct BinNode { //二叉树节点模板类
 
     template <typename VST> void travPre ( VST visit ); //子树先序遍历迭代
 
-//    template <typename VST> void travIn ( VST& ); //子树中序遍历
-//    template <typename VST> void travPost ( VST& ); //子树后序遍历
+    template <typename VST> void travIn ( VST visit ); //子树中序遍历迭代
+
+    template <typename VST> void travIn_1 ( VST visit ); //子树中序遍历迭代
+
+    template <typename VST> void travPost ( VST visit ); //子树后序遍历
+
 // 比较器、判等器（各列其一，其余自行补充）
     bool operator<(BinNode const &bn) { return data < bn.data; } //小于
     bool operator==(BinNode const &bn) { return data == bn.data; } //等于
@@ -160,6 +165,97 @@ void BinNode<T>::travPre(VST visit) {
         if (S.empty()) break;
         x = S.back();
         S.pop_back();
+    }
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travIn(VST visit) {
+    std::vector<BinNodePosi<T>> S;
+    BinNodePosi<T> x = this;
+    while (true) {
+        while (x){
+            S.push_back(x);
+            x = x->lc;
+        }
+        if (S.empty()) break;
+        x = S.back();
+        visit(x->data);
+        S.pop_back();
+        x = x->rc;
+    }
+
+}
+
+template<typename T>
+BinNodePosi<T> BinNode<T>::succ() {
+    BinNodePosi<T> s = this;
+    if (rc) {
+        s = rc;
+        while (HasLChild(*s)) s = s->lc;
+    } else {
+        while (IsRChild(*s)) s = s->parent;
+        s = s->parent;
+    }
+    return s;
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travIn_1(VST visit) {
+    bool backTrack = false;
+    BinNodePosi<T> x = this;
+    while (true) {
+        if ((!backTrack)&&(HasLChild(*x))) x = x->lc;
+        else{
+            visit(x->data);
+            if (HasRChild(*x)) {
+                backTrack = false;
+                x = x->rc;
+            } else {
+                if (!(x=x->succ())) break;
+                backTrack = true;
+            }
+        }
+    }
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travPost(VST visit) {
+    std::vector<BinNodePosi<T>> S;
+    BinNodePosi<T> x = this;
+    S.push_back(x);
+    while (!S.empty()) {
+        if (S.back() != x->parent) {
+            while (BinNodePosi<T> node = S.back()) {
+                if (HasLChild(*node)) {
+                    if (HasRChild(*node)) S.push_back(node->rc);
+                    S.push_back(node->lc);
+                } else {
+                    S.push_back(node->rc);
+                }
+            }
+            S.pop_back();
+        }
+        x = S.back();
+        S.pop_back();
+        visit(x->data);
+    }
+}
+
+template<typename T>
+template<typename VST>
+void BinNode<T>::travLevel(VST visit) {
+    std::deque<BinNodePosi<T>> S;
+    BinNodePosi<T> x = this;
+    S.push_back(x);
+    while (!S.empty()) {
+        x = S.front();
+        S.pop_front();
+        visit(x->data);
+        if (HasLChild(*x))S.push_back(x->lc);
+        if (HasRChild(*x))S.push_back(x->rc);
     }
 }
 
