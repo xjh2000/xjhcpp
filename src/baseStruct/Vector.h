@@ -37,7 +37,7 @@ protected:
 public:
 // 构造函数
 
-    explicit Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0) //容量为c、规模为s、所有元素初始为v
+    Vector(int c = DEFAULT_CAPACITY, int s = 0, T v = 0) //容量为c、规模为s、所有元素初始为v
     {
         _elem = new T[_capacity = c];
         for (_size = 0; _size < s; _size++) _elem[_size] = v;
