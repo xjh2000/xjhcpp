@@ -2,6 +2,8 @@
 // Created by xjh on 1/27/2022.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #pragma once
 
 #include <climits>
@@ -32,14 +34,14 @@ private:
 
     void DFS ( int, int& ); //（连通域）深度优先搜索算法
 
-//    void BCC ( int, int&, Stack<int>& ); //（连通域）基于DFS的双连通分量分解算法
+    void BCC ( int, int&, std::vector<int>& ); //（连通域）基于DFS的双连通分量分解算法
 
     bool TSort ( int, int&, std::vector<Tv>* ); //（连通域）基于DFS的拓扑排序算法
 
 //    template <typename PU> void PFS ( int, PU ); //（连通域）优先级搜索框架
 public:
 // 顶点
-    int n; //顶点总数
+    int n{}; //顶点总数
     virtual int insert(Tv const &) = 0; //插入顶点，返回编号
     virtual Tv remove(int) = 0; //删除顶点及其关联边，返回该顶点信息
     virtual Tv &vertex(int) = 0; //顶点v的数据（该顶点的确存在）
@@ -53,7 +55,7 @@ public:
     virtual int &parent(int) = 0; //顶点v在遍历树中的父亲
     virtual int &priority(int) = 0; //顶点v在遍历树中的优先级数
 // 边：这里约定，无向边均统一转化为方向互逆的一对有向边，从而将无向图视作有向图的特例
-    int e; //边总数
+    int e{}; //边总数
     virtual bool exists(int, int) = 0; //边(v, u)是否存在
     virtual void insert(Te const &, int, int, int) = 0; //在顶点v和u之间插入权重为w的边e
     virtual Te remove(int, int) = 0; //删除顶点v和u之间的边e，返回该边信息
@@ -65,7 +67,8 @@ public:
     void bfs(int); //广度优先搜索算法
 
     void dfs ( int ); //深度优先搜索算法
-//    void bcc ( int ); //基于DFS的双连通分量分解算法
+
+    void bcc ( int ); //基于DFS的双连通分量分解算法
 
     std::vector<Tv> tSort ( int ); //基于DFS的拓扑排序算法
 
@@ -187,4 +190,53 @@ bool Graph<Tv, Te>::TSort(int v, int & clock, std::vector<Tv> * stack) {
     return true;
 }
 
+template<typename Tv, typename Te>
+void Graph<Tv, Te>::bcc(int s) {
+    reset();
+    int clock = 0;
+    int v = s;
+    std::vector<int> stack;
+    do {
+        if (status(v) == UNDISCOVERED) {
+            BCC(v, clock, stack);
+            stack.pop_back();
+        }
+    } while (s != (v = (++v % n)));
+}
 
+#define hca(x) (fTime(x))
+template<typename Tv, typename Te>
+void Graph<Tv, Te>::BCC(int v, int &clock, std::vector<int> &stack) {
+    hca(v) = dTime(v) = clock++;
+    status(v) = DISCOVERED;
+    stack.push_back(v);
+    for (int u = firstNbr(v); u > -1; u = nextNbr(v, u)) {
+        switch (status(u)) {
+            case UNDISCOVERED:
+                parent(u) = v;
+                type(v, u) = TREE;
+                BCC(u, clock, stack);
+                if (hca(u) < dTime(v)) {
+                    hca(v) = std::min(hca(v), hca(u));
+                } else {
+                    while (v != stack.back()) stack.pop_back();
+                }
+                break;
+            case DISCOVERED:
+                type(v, u) = BACKWARD;
+                if (u != parent(v)) {
+                    hca(v) = std::min(hca(v), dTime(u));
+                }
+                break;
+            default:
+                type(v, u) = (dTime(v) < dTime(u)) ? FORWARD : CROSS;
+                break;
+        }
+    }
+    status(v) = VISITED;
+}
+#undef hca
+
+
+
+#pragma clang diagnostic pop
