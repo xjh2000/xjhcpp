@@ -32,13 +32,15 @@ private:
 
     void BFS(int, int &); //（连通域）广度优先搜索算法
 
-    void DFS ( int, int& ); //（连通域）深度优先搜索算法
+    void DFS(int, int &); //（连通域）深度优先搜索算法
 
-    void BCC ( int, int&, std::vector<int>& ); //（连通域）基于DFS的双连通分量分解算法
+    void BCC(int, int &, std::vector<int> &); //（连通域）基于DFS的双连通分量分解算法
 
-    bool TSort ( int, int&, std::vector<Tv>* ); //（连通域）基于DFS的拓扑排序算法
+    bool TSort(int, int &, std::vector<Tv> *); //（连通域）基于DFS的拓扑排序算法
 
-//    template <typename PU> void PFS ( int, PU ); //（连通域）优先级搜索框架
+    template<typename PU>
+    void PFS(int, PU); //（连通域）优先级搜索框架
+
 public:
 // 顶点
     int n{}; //顶点总数
@@ -66,15 +68,18 @@ public:
 
     void bfs(int); //广度优先搜索算法
 
-    void dfs ( int ); //深度优先搜索算法
+    void dfs(int); //深度优先搜索算法
 
-    void bcc ( int ); //基于DFS的双连通分量分解算法
+    void bcc(int); //基于DFS的双连通分量分解算法
 
-    std::vector<Tv> tSort ( int ); //基于DFS的拓扑排序算法
+    std::vector<Tv> tSort(int); //基于DFS的拓扑排序算法
 
-//    void prim ( int ); //最小支撑树Prim算法
+    void prim ( int ); //最小支撑树Prim算法
+
 //    void dijkstra ( int ); //最短路径Dijkstra算法
-//    template <typename PU> void pfs ( int, PU ); //优先级搜索框架
+
+    template<typename PU>
+    void pfs(int, PU); //优先级搜索框架
 };
 
 template<typename Tv, typename Te>
@@ -167,7 +172,7 @@ std::vector<Tv> Graph<Tv, Te>::tSort(int s) {
 }
 
 template<typename Tv, typename Te>
-bool Graph<Tv, Te>::TSort(int v, int & clock, std::vector<Tv> * stack) {
+bool Graph<Tv, Te>::TSort(int v, int &clock, std::vector<Tv> *stack) {
     dTime(v) = clock++;
     status(v) = DISCOVERED;
     for (int u = firstNbr(v); -1 < u; u = nextNbr(v, u)) {
@@ -205,6 +210,7 @@ void Graph<Tv, Te>::bcc(int s) {
 }
 
 #define hca(x) (fTime(x))
+
 template<typename Tv, typename Te>
 void Graph<Tv, Te>::BCC(int v, int &clock, std::vector<int> &stack) {
     hca(v) = dTime(v) = clock++;
@@ -235,8 +241,66 @@ void Graph<Tv, Te>::BCC(int v, int &clock, std::vector<int> &stack) {
     }
     status(v) = VISITED;
 }
+
 #undef hca
 
+template<typename Tv, typename Te>
+template<typename PU>
+void Graph<Tv, Te>::pfs(int s, PU prioUpdater) {
+    reset();
+    int v = s;
+    do {
+        if (status(v) == UNDISCOVERED) {
+            PFS(v, prioUpdater);
+        }
+    } while (s != (v = (++v % n)));
+
+}
+
+template<typename Tv, typename Te>
+template<typename PU>
+void Graph<Tv, Te>::PFS(int s, PU prioUpdater) {
+    priority(s) = 0;
+    status(s) = VISITED;
+    parent(s) = -1;
+    int clock = 0;
+    dTime(s) = clock++;
+    while (true) {
+        for (int w = firstNbr(s); w > -1; w = nextNbr(s, w)) {
+            prioUpdater(this, s, w);
+        }
+        for (int shortest = INT_MAX, w = 0; w < n; ++w) {
+            if (UNDISCOVERED == status(w)) {
+                if (shortest > priority(w)) {
+                    shortest = priority(w);
+                    s = w;
+                }
+            }
+        }
+        if (VISITED == status(s)) break;
+        status(s) = VISITED;
+        dTime(s) = clock++;
+        type(parent(s), s) = TREE;
+    }
+
+}
+
+template<typename Tv, typename Te>
+void Graph<Tv, Te>::prim(int s) {
+    pfs(s,PrimPU<Tv,Te>());
+}
+
+template<typename Tv, typename Te>
+struct PrimPU {
+    virtual void operator()(Graph<Tv, Te> *g, int uk, int v) {
+        if (UNDISCOVERED == g->status(v)) {
+            if (g->priority(v) > g->weight(uk, v)) {
+                g->priority(v) = g->weight(uk, v);
+                g->parent(v) = uk;
+            }
+        }
+    }
+};
 
 
 #pragma clang diagnostic pop

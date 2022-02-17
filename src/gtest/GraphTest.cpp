@@ -106,4 +106,37 @@ namespace {
         printf("bbc pass");
     }
 
+
+    TEST_F(GraphTest, prim) {
+        GraphMatrix<int, int> graph;
+        for (int i = 0; i < 8; ++i) {
+            graph.insert(i);
+        }
+        graph.insert(0, 4, 0, 1);
+        graph.insert(0, 6, 0, 3);
+        graph.insert(0, 7, 0, 6);
+        graph.insert(0, 12, 1, 2);
+        graph.insert(0, 2, 3, 6);
+        graph.insert(0, 9, 3, 2);
+        graph.insert(0, 13, 3, 4);
+        graph.insert(0, 14, 6, 7);
+        graph.insert(0, 11, 6, 4);
+        graph.insert(0, 1, 2, 4);
+        graph.insert(0, 2, 2, 5);
+        graph.insert(0, 10, 2, 7);
+        graph.insert(0, 5, 4, 5);
+        graph.insert(0, 8, 4, 7);
+        graph.insert(0, 7, 6, 7);
+        graph.prim(0);
+        ASSERT_EQ(0,graph.dTime(0));
+        ASSERT_EQ(1,graph.dTime(1));
+        ASSERT_EQ(4,graph.dTime(2));
+        ASSERT_EQ(2,graph.dTime(3));
+        ASSERT_EQ(5,graph.dTime(4));
+        ASSERT_EQ(6,graph.dTime(5));
+        ASSERT_EQ(3,graph.dTime(6));
+        ASSERT_EQ(7,graph.dTime(7));
+
+        printf("prim pass");
+    }
 }
