@@ -6,7 +6,7 @@
 
 #include "vector"
 #include "Graph.h" //引入图ADT
-#include "Vector.h"
+#include "Vector/Vector.h"
 
 template<typename Tv>
 struct Vertex { //顶点对象（为简化起见，并未严格封装）

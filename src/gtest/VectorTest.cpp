@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "Vector.h"
+#include "Vector/Vector.h"
 #include "random"
 
 namespace {

@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "GraphMatrix.h"
+#include "Graph/GraphMatrix.h"
 
 namespace {
     class GraphTest : public testing::Test {

@@ -6,8 +6,8 @@
 
 #include <random>
 #include "gtest/gtest.h"
-#include "ListNode.h"
-#include "List.h"
+#include "List/ListNode.h"
+#include "List/List.h"
 
 namespace {
     class ListTest : public testing::Test {

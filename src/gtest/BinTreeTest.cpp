@@ -3,7 +3,7 @@
 //
 #include <random>
 #include "gtest/gtest.h"
-#include "BinTree.h"
+#include "BinTree//BinTree.h"
 
 namespace {
     class BinTreeTest : public testing::Test {
