@@ -24,10 +24,15 @@ public:
 
 };
 
-TEST_F(BSTTest, search) {
+TEST_F(BSTTest, base) {
     BST<int> tree;
-    EXPECT_EQ(1, 1);
-
-    printf("search pass");
+    tree.insert(20);
+    tree.insert(30);
+    tree.insert(40);
+    tree.insert(50);
+    EXPECT_EQ(tree.search(40)->data, 40);
+    EXPECT_EQ(tree.remove(40), true);
+    EXPECT_EQ(tree.search(44), nullptr);
+    printf("BST base pass");
 }
 

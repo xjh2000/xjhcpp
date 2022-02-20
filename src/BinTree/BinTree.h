@@ -26,7 +26,7 @@ public:
 
     BinNodePosi<T> root() const { return _root; } //树根
 
-    BinNodePosi<T> insert(T const &); //插入根节点
+    virtual BinNodePosi<T> insert(T const &); //插入根节点
 
     BinNodePosi<T> insert(T const &, BinNodePosi<T>); //插入左孩子
 
@@ -40,7 +40,7 @@ public:
 
     int removeAt(BinNodePosi<T>); //释放子树空间
 
-    BinTree<T>* secede ( BinNodePosi<T> ); //子树分离
+    BinTree<T> *secede(BinNodePosi<T>); //子树分离
 
 //    template <typename VST> //操作器
 //    void travLevel ( VST& visit ) { if ( _root ) _root->travLevel ( visit ); } //层次遍历
