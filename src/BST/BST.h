@@ -14,7 +14,8 @@ protected:
 //    BinNodePosi<T> connect34 ( //按照“3 + 4”结构，联接3个节点及四棵子树
 //            BinNodePosi<T>, BinNodePosi<T>, BinNodePosi<T>,
 //            BinNodePosi<T>, BinNodePosi<T>, BinNodePosi<T>, BinNodePosi<T> );
-//    BinNodePosi<T> rotateAt ( BinNodePosi<T> x ); //对x及其父亲、祖父做统一旋转调整
+
+    BinNodePosi<T> rotateAt(BinNodePosi<T> x); //对x及其父亲、祖父做统一旋转调整
 
     BinNodePosi<T> &searchIN(BinNodePosi<T> v, const T &e);
 
@@ -94,5 +95,10 @@ BinNodePosi<T> BST<T>::removeAt(BinNodePosi<T> x) {
     if (succ) succ->parent = _hot;
     delete w;
     return succ;
+}
+
+template<typename T>
+BinNodePosi<T> BST<T>::rotateAt(BinNodePosi<T> x) {
+    return nullptr;
 }
 

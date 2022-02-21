@@ -1,6 +1,6 @@
 add_subdirectory(utils)
 
-add_library(baseStruct Vector/Vector.h Vector/Vector_util.h main.cpp List/ListNode.h List/List.h BinTree/BinNode.h BinTree/BinTree.h Graph/Graph.h Graph/GraphMatrix.h Entry/Entry.h BST/BST.h)
+add_library(baseStruct Vector/Vector.h Vector/Vector_util.h main.cpp List/ListNode.h List/List.h BinTree/BinNode.h BinTree/BinTree.h Graph/Graph.h Graph/GraphMatrix.h Entry/Entry.h BST/BST.h BST/AVL.h)
 
 target_include_directories(baseStruct
         INTERFACE

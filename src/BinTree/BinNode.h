@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "vector"
 #include "deque"
 
@@ -24,7 +25,17 @@
  ******************************************************************************************/
 #define sibling(p) ( IsLChild( * (p) ) ? (p)->parent->rc : (p)->parent->lc ) /*兄弟*/
 #define uncle(x) ( sibling( (x)->parent ) ) /*叔叔*/
-#define FromParentTo(x) ( IsRoot(x) ? _root : ( IsLChild(x) ? (x).parent->lc : (x).parent->rc ) )
+#define FromParentTo(x) ( IsRoot(x) ? this->_root : ( IsLChild(x) ? (x).parent->lc : (x).parent->rc ) )
+
+
+/******************************************************************************************
+ * BinNode平衡树操作
+ ******************************************************************************************/
+#define HeightUpdated(x) /*高度更新常规条件*/ \
+       ( (x).height == 1 + max( stature( (x).lc ), stature( (x).rc ) ) )
+#define Balanced(x) ( stature( (x).lc ) == stature( (x).rc ) ) //理想平衡条件
+#define BalFac(x) ( stature( (x).lc ) - stature( (x).rc ) ) //平衡因子
+#define AvlBalanced(x) ( ( -2 < BalFac(x) ) && ( BalFac(x) < 2 ) ) //AVL平衡条件
 
 
 #if defined( DSA_REDBLACK )
@@ -66,21 +77,29 @@ struct BinNode { //二叉树节点模板类
 
     BinNodePosi<T> succ(); //取当前节点的直接后继
 
-    template <typename VST> void travLevel ( VST visit ); //子树层次遍历
+    template<typename VST>
+    void travLevel(VST visit); //子树层次遍历
 
-    template <typename VST> void travPre_R ( BinNodePosi<T> x, VST visit); //子树先序遍历递归
+    template<typename VST>
+    void travPre_R(BinNodePosi<T> x, VST visit); //子树先序遍历递归
 
-    template <typename VST> void travIn_R ( BinNodePosi<T> x, VST visit ); //子树中序遍历递归
+    template<typename VST>
+    void travIn_R(BinNodePosi<T> x, VST visit); //子树中序遍历递归
 
-    template <typename VST> void travPost_R ( BinNodePosi<T> x, VST visit ); //子树中序遍历递归
+    template<typename VST>
+    void travPost_R(BinNodePosi<T> x, VST visit); //子树中序遍历递归
 
-    template <typename VST> void travPre ( VST visit ); //子树先序遍历迭代
+    template<typename VST>
+    void travPre(VST visit); //子树先序遍历迭代
 
-    template <typename VST> void travIn ( VST visit ); //子树中序遍历迭代
+    template<typename VST>
+    void travIn(VST visit); //子树中序遍历迭代
 
-    template <typename VST> void travIn_1 ( VST visit ); //子树中序遍历迭代
+    template<typename VST>
+    void travIn_1(VST visit); //子树中序遍历迭代
 
-    template <typename VST> void travPost ( VST visit ); //子树后序遍历
+    template<typename VST>
+    void travPost(VST visit); //子树后序遍历
 
 // 比较器、判等器（各列其一，其余自行补充）
     bool operator<(BinNode const &bn) { return data < bn.data; } //小于
@@ -157,7 +176,7 @@ void BinNode<T>::travPre(VST visit) {
     std::vector<BinNodePosi<T>> S;
     BinNodePosi<T> x = this;
     while (true) {
-        while (x){
+        while (x) {
             visit(x->data);
             if (HasRChild(*x)) S.push_back(x->rc);
             x = x->lc;
@@ -174,7 +193,7 @@ void BinNode<T>::travIn(VST visit) {
     std::vector<BinNodePosi<T>> S;
     BinNodePosi<T> x = this;
     while (true) {
-        while (x){
+        while (x) {
             S.push_back(x);
             x = x->lc;
         }
@@ -206,14 +225,14 @@ void BinNode<T>::travIn_1(VST visit) {
     bool backTrack = false;
     BinNodePosi<T> x = this;
     while (true) {
-        if ((!backTrack)&&(HasLChild(*x))) x = x->lc;
-        else{
+        if ((!backTrack) && (HasLChild(*x))) x = x->lc;
+        else {
             visit(x->data);
             if (HasRChild(*x)) {
                 backTrack = false;
                 x = x->rc;
             } else {
-                if (!(x=x->succ())) break;
+                if (!(x = x->succ())) break;
                 backTrack = true;
             }
         }
