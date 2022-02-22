@@ -5,6 +5,7 @@
 #include <random>
 #include "gtest/gtest.h"
 #include "BST/BST.h"
+#include "BST/AVL.h"
 
 class BSTTest : public testing::Test {
 public:
@@ -36,3 +37,16 @@ TEST_F(BSTTest, base) {
     printf("BST base pass");
 }
 
+
+TEST_F(BSTTest, AVL) {
+    AVL<int> tree;
+    tree.insert(20);
+    tree.insert(30);
+    tree.insert(40);
+    tree.insert(50);
+    EXPECT_EQ(tree.search(40)->data, 40);
+    EXPECT_EQ(tree.remove(40), true);
+    EXPECT_EQ(tree.remove(30), true);
+    EXPECT_EQ(tree.search(44), nullptr);
+    printf("BST AVL pass");
+}
