@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 #include "BST/BST.h"
 #include "BST/AVL.h"
+#include "BST/Splay.h"
 
 class BSTTest : public testing::Test {
 public:
@@ -49,4 +50,18 @@ TEST_F(BSTTest, AVL) {
     EXPECT_EQ(tree.remove(30), true);
     EXPECT_EQ(tree.search(44), nullptr);
     printf("BST AVL pass");
+}
+
+
+TEST_F(BSTTest, Splay) {
+    Splay<int> tree;
+    tree.insert(20);
+    tree.insert(30);
+    tree.insert(40);
+    tree.insert(50);
+    EXPECT_EQ(tree.search(40)->data, 40);
+//    EXPECT_EQ(tree.remove(40), true);
+//    EXPECT_EQ(tree.remove(30), true);
+//    EXPECT_EQ(tree.search(44), nullptr);
+    printf("BST Splay pass");
 }
