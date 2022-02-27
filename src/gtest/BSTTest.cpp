@@ -60,8 +60,8 @@ TEST_F(BSTTest, Splay) {
     tree.insert(40);
     tree.insert(50);
     EXPECT_EQ(tree.search(40)->data, 40);
-//    EXPECT_EQ(tree.remove(40), true);
-//    EXPECT_EQ(tree.remove(30), true);
-//    EXPECT_EQ(tree.search(44), nullptr);
+    EXPECT_EQ(tree.remove(40), true);
+    EXPECT_EQ(tree.remove(30), true);
+    EXPECT_NE(tree.search(44)->data, 44);
     printf("BST Splay pass");
 }

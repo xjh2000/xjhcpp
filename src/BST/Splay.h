@@ -28,6 +28,8 @@ protected:
 public:
     BinNodePosi<T> &search(const T &e) override;
 
+    bool remove(const T &e) override;
+
     BinNodePosi<T> insert(const T &e) override;
 };
 
@@ -117,4 +119,31 @@ BinNodePosi<T> Splay<T>::insert(const T &e) {
     }
     this->updateHeightAbove(t);
     return this->_root;
+}
+
+template<typename T>
+bool Splay<T>::remove(const T &e) {
+    if (!this->_root || e != search(e)->data) return false;
+    BinNodePosi<T> w = this->_root;
+    if (!HasLChild(*w)) {
+        this->_root = this->_root->rc;
+        if (this->_root) {
+            this->_root->parent = nullptr;
+        }
+    } else if (!HasRChild(*w)) {
+        this->_root = this->_root->lc;
+        if (this->_root) {
+            this->_root->parent = nullptr;
+        }
+    } else {
+        this->_root = w->lc;
+        this->_root->parent = nullptr;
+        search(e);
+        this->_root->rc = w->rc;
+        w->rc->parent = this->_root;
+    }
+    delete w;
+    this->_size--;
+    if (this->_root) this->updateHeight(this->_root);
+    return true;
 }
