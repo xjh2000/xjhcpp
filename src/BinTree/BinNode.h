@@ -74,7 +74,15 @@ struct BinNode { //二叉树节点模板类
 
     explicit BinNode(T e, BinNodePosi<T> p = nullptr, BinNodePosi<T> lc = nullptr, BinNodePosi<T> rc = nullptr,
                      int h = 0, int l = 1, RBColor c = RB_RED) :
-            data(e), parent(p), lc(lc), rc(rc), height(h), npl(l), color(c) {}
+            data(e), parent(p), lc(lc), rc(rc), height(h), npl(l), color(c) {
+        if (p) {
+            if (p->data >= e) {
+                p->lc = this;
+            } else {
+                p->rc = this;
+            }
+        }
+    }
 
 // 操作接口
     int size(); //统计当前节点后代总数，亦即以其为根的子树的规模

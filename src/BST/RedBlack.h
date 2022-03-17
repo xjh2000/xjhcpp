@@ -41,5 +41,43 @@ BinNodePosi<T> RedBlack<T>::insert(const T &e) {
 
 template<typename T>
 void RedBlack<T>::solveDoubleRed(BinNodePosi<T> x) {
+    if (IsRoot(*x)) {
+        this->_root = x;
+        this->_root->color = RB_BLACK;
+        this->_root->height++;
+        return;
+    }
+
+    BinNodePosi<T> p = x->parent;
+    if (IsBlack(p)) return;
+    BinNodePosi<T> g = p->parent;
+    BinNodePosi<T> u = uncle(x);
+
+    if (IsBlack(u)) {
+
+        if (IsLChild(*x) == IsLChild(*p)) {
+            p->color = RB_BLACK;
+        } else {
+            x->color = RB_BLACK;
+        }
+        g->color = RB_RED;
+        BinNodePosi<T> gg = g->parent;
+        if (IsRoot(*g)) {
+            this->_root = this->rotateAt(x);
+        } else {
+            BinNodePosi<T> r = FromParentTo(*g) = this->rotateAt(x);
+            r->parent = gg;
+        }
+
+    } else {
+
+        p->color = RB_BLACK;
+        p->height++;
+        u->color = RB_BLACK;
+        u->height++;
+        if (!IsRoot(*g)) g->color = RB_RED;
+        solveDoubleRed(g);
+
+    }
 
 }
