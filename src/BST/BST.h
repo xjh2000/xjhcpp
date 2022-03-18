@@ -19,11 +19,11 @@ protected:
 
     BinNodePosi<T> &searchIN(BinNodePosi<T> v, const T &e);
 
-    BinNodePosi<T> removeAt(BinNodePosi<T> x);
+    BinNodePosi<T> removeAt(BinNodePosi<T> &x);
 
 public: //基本接口：以virtual修饰，强制要求所有派生类（BST变种）根据各自的规则对其重写
 
-    virtual BinNodePosi<T> &search(const T &e); //查找
+    virtual BinNodePosi<T> search(const T &e); //查找
 
     virtual BinNodePosi<T> insert(const T &e); //插入
 
@@ -36,8 +36,8 @@ public: //基本接口：以virtual修饰，强制要求所有派生类（BST变
 };
 
 template<typename T>
-BinNodePosi<T> &BST<T>::search(const T &e) {
-    _hot = NULL;
+BinNodePosi<T> BST<T>::search(const T &e) {
+    _hot = nullptr;
     return searchIN(this->root(), e);
 }
 
@@ -77,14 +77,14 @@ bool BST<T>::remove(const T &e) {
 }
 
 template<typename T>
-BinNodePosi<T> BST<T>::removeAt(BinNodePosi<T> x) {
+BinNodePosi<T> BST<T>::removeAt(BinNodePosi<T> &x) {
     BinNodePosi<T> w = x;
-    BinNodePosi<T> succ = NULL;
+    BinNodePosi<T> succ = nullptr;
     BinNodePosi<T> u = x->parent;
     if (!HasLChild(*x)) {
-        ((u->lc == x) ? u->lc : u->rc) = succ = x->rc;
+        succ = FromParentTo(*x) = x->rc;
     } else if (!HasRChild(*x)) {
-        ((u->lc == x) ? u->lc : u->rc) = succ = x->lc;
+        succ = FromParentTo(*x) = x->lc;
     } else {
         w = x->succ();
         std::swap(x->data, w->data);

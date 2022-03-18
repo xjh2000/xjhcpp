@@ -19,7 +19,7 @@ protected:
 public:
     BinNodePosi<T> insert(const T &e); //插入（重写）
 
-//    bool remove ( const T& e ); //删除（重写）
+    bool remove(const T &e); //删除（重写）
 
 // BST::search()等其余接口可直接沿用
 };
@@ -80,4 +80,28 @@ void RedBlack<T>::solveDoubleRed(BinNodePosi<T> x) {
 
     }
 
+}
+
+template<typename T>
+bool RedBlack<T>::remove(const T &e) {
+    BinNodePosi<T> x = this->search(e);
+    if (!x) return false;
+    BinNodePosi<T> r = this->removeAt(x);
+    if (!(--this->_size)) {
+        this->_root = nullptr;
+        return true;
+    }
+    if (!this->_hot) {
+        this->_root = r;
+        r->color = RB_BLACK;
+        updateHeight(r);
+        return true;
+    }
+    if (BlackHeightUpdated(*this->_hot)) {
+        return true;
+    }
+    if (IsRed(r)) {
+        
+    }
+    return true;
 }

@@ -26,7 +26,7 @@ protected:
     BinNodePosi<T> splay(BinNodePosi<T> v);
 
 public:
-    BinNodePosi<T> &search(const T &e) override;
+    BinNodePosi<T> search(const T &e) override;
 
     bool remove(const T &e) override;
 
@@ -86,7 +86,7 @@ BinNodePosi<T> Splay<T>::splay(BinNodePosi<T> v) {
 }
 
 template<typename T>
-BinNodePosi<T> &Splay<T>::search(const T &e) {
+BinNodePosi<T> Splay<T>::search(const T &e) {
     this->_hot = nullptr;
     BinNodePosi<T> p = this->searchIN(this->_root, e);
     this->_root = splay(p ? p : this->_hot);
