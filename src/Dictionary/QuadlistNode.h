@@ -26,7 +26,7 @@ struct QuadlistNode { //QuadlistNode模板类
 
 template<typename T>
 QListNodePosi<T> QuadlistNode<T>::insertAsSuccAbove(const T &e, QListNodePosi<T> b) {
-    QuadlistNode<T> newNode = new QuadlistNode(e, this, this->succ, nullptr, b);
+    QListNodePosi<T> newNode = new QuadlistNode(e, this, this->succ, nullptr, b);
     this->succ->pred = newNode;
     this->succ = newNode;
     if (b) b->pred = newNode;

@@ -65,7 +65,6 @@ template<typename T>
 T Quadlist<T>::remove(QListNodePosi<T> p) {
     p->pred->succ = p->succ;
     p->succ->pred = p->pred;
-    p->below->above = nullptr;
     _size--;
     T e = p->entry;
     delete p;
