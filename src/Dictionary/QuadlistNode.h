@@ -29,6 +29,6 @@ QListNodePosi<T> QuadlistNode<T>::insertAsSuccAbove(const T &e, QListNodePosi<T>
     QListNodePosi<T> newNode = new QuadlistNode(e, this, this->succ, nullptr, b);
     this->succ->pred = newNode;
     this->succ = newNode;
-    if (b) b->pred = newNode;
+    if (b) b->above = newNode;
     return newNode;
 }

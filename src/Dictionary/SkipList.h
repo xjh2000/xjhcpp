@@ -71,7 +71,22 @@ bool Skiplist<K, V>::put(K k, V v) {
 
 template<typename K, typename V>
 bool Skiplist<K, V>::remove(K k) {
-    return false;
+    if (this->empty()) return false;
+    ListNode<Quadlist<Entry<K, V>> *> *qlist = this->first();
+    QuadlistNode<Entry<K, V>> *p = qlist->data->first();
+    if (!skipSearch(qlist, p, k)) return false;
+    do {
+        QuadlistNode<Entry<K, V>> *lower = p->below;
+        qlist->data->remove(p);
+        p = lower;
+        qlist = qlist->succ;
+    } while (qlist->succ);
+    qlist = this->first();
+    while (!this->empty() && qlist->data->empty()) {
+        List<Quadlist<Entry<K, V>> *>::remove(this->first());
+        qlist = this->first();
+    }
+    return true;
 }
 
 #pragma clang diagnostic pop

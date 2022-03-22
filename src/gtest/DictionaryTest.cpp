@@ -42,5 +42,7 @@ TEST_F(DictionaryTest, SkipList) {
     skiplist.put("jim", 30);
     ASSERT_EQ(*skiplist.get("haoGe"), 20);
     ASSERT_EQ(*skiplist.get("jim"), 30);
+    skiplist.remove("jim");
+    ASSERT_EQ(skiplist.get("jim"), nullptr);
     printf("SkipList  pass");
 }
