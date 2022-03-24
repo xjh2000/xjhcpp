@@ -38,7 +38,6 @@ TEST_F(DictionaryTest, quadlist) {
 TEST_F(DictionaryTest, SkipList) {
     Skiplist<std::string, int> skiplist;
     skiplist.put("haoGe", 20);
-    skiplist.put("haoGe", 30);
     skiplist.put("jim", 30);
     ASSERT_EQ(*skiplist.get("haoGe"), 20);
     ASSERT_EQ(*skiplist.get("jim"), 30);
