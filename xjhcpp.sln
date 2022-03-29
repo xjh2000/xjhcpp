@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Collections", "Collections\Collections.vcxproj", "{114D9584-0293-4282-850A-5784A9CF54B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollectionsTest", "CollectionsTest\CollectionsTest.vcxproj", "{91CA1663-0F74-4B6D-8F09-619FC3D24698}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{114D9584-0293-4282-850A-5784A9CF54B6}.Release|Any CPU.ActiveCfg = Release|Win32
+		{114D9584-0293-4282-850A-5784A9CF54B6}.Release|Any CPU.Build.0 = Release|Win32
+		{114D9584-0293-4282-850A-5784A9CF54B6}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{114D9584-0293-4282-850A-5784A9CF54B6}.Debug|Any CPU.Build.0 = Debug|x64
+		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Release|Any CPU.ActiveCfg = Release|Win32
+		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Release|Any CPU.Build.0 = Release|Win32
+		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Debug|Any CPU.Build.0 = Debug|x64
+	EndGlobalSection
+EndGlobal
