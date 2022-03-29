@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Collections", "Collections\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollectionsTest", "CollectionsTest\CollectionsTest.vcxproj", "{91CA1663-0F74-4B6D-8F09-619FC3D24698}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Language", "Language\Language.vcxproj", "{649C550C-B578-47D0-AA17-18729BD037CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Release|Any CPU.Build.0 = Release|Win32
 		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{91CA1663-0F74-4B6D-8F09-619FC3D24698}.Debug|Any CPU.Build.0 = Debug|x64
+		{649C550C-B578-47D0-AA17-18729BD037CA}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{649C550C-B578-47D0-AA17-18729BD037CA}.Debug|Any CPU.Build.0 = Debug|Win32
+		{649C550C-B578-47D0-AA17-18729BD037CA}.Release|Any CPU.ActiveCfg = Release|Win32
+		{649C550C-B578-47D0-AA17-18729BD037CA}.Release|Any CPU.Build.0 = Release|Win32
 	EndGlobalSection
 EndGlobal
