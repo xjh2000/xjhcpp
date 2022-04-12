@@ -30,7 +30,7 @@ public:
 
     BinNodePosi<T> root() const { return _root; } //树根
 
-    virtual BinNodePosi<T> insert(const T&); //插入根节点
+    BinNodePosi<T> insert(const T&); //插入根节点
 
     BinNodePosi<T> insert(const T&, BinNodePosi<T>); //插入左孩子
 

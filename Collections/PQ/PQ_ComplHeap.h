@@ -47,7 +47,6 @@ Rank percolate_up(T* A, Rank i)
 
 //上滤
 
-
 template <typename T>
 struct pq_compl_heap : public PQ<T>, public Vector<T>
 {

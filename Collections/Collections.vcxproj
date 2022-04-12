@@ -177,6 +177,7 @@
         <ClInclude Include="List\ListNode.h" />
         <ClInclude Include="PQ\PQ.h" />
         <ClInclude Include="PQ\PQ_ComplHeap.h" />
+        <ClInclude Include="PQ\PQ_LeftHeap.h" />
         <ClInclude Include="utils\Hello.h" />
         <ClInclude Include="Vector\Vector.h" />
         <ClInclude Include="Vector\Vector_util.h" />

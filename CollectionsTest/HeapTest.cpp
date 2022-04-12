@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 #include "../Collections/Dictionary/SkipList.h"
 #include "../Collections/PQ/PQ_ComplHeap.h"
+#include "../Collections/PQ/PQ_LeftHeap.h"
 
 class HeapTest : public testing::Test
 {
@@ -45,4 +46,26 @@ TEST_F(HeapTest, ComplateHeap)
     heap1.delMax();
     EXPECT_EQ(heap1.getMax(), 20);
     printf("ComplateHeap  pass");
+}
+
+TEST_F(HeapTest, LeftHeap)
+{
+    PQ_LeftHeap<int> heap;
+    heap.insert(10);
+    heap.insert(20);
+    heap.insert(5);
+    heap.insert(30);
+    heap.insert(-1);
+    EXPECT_EQ(heap.getMax(), 30);
+    heap.delMax();
+    EXPECT_EQ(heap.getMax(), 20);
+    int intArray[] =
+    {
+        10, 20, 5, 30, -1
+    };
+    PQ_LeftHeap<int> heap1(intArray, 5);
+    EXPECT_EQ(heap1.getMax(), 30);
+    heap1.delMax();
+    EXPECT_EQ(heap1.getMax(), 20);
+    printf("LeftHeap  pass");
 }

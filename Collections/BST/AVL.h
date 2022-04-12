@@ -24,7 +24,7 @@ class AVL : public BST<T>
 {
     //由BST派生AVL树模板类
 public:
-    BinNodePosi<T> insert(const T& e) override; //插入（重写）
+    BinNodePosi<T> insert(const T& e); //插入（重写）
 
     bool remove(const T& e) override; //删除（重写）
 

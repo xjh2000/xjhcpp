@@ -33,7 +33,7 @@ public:
 
     bool remove(const T& e) override;
 
-    BinNodePosi<T> insert(const T& e) override;
+    BinNodePosi<T> insert(const T& e);
 };
 
 template <typename T>

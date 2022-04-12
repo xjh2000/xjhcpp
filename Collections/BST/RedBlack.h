@@ -18,7 +18,7 @@ protected:
     int updateHeight(BinNodePosi<T> x) override; //更新节点x的高度
 
 public:
-    BinNodePosi<T> insert(const T& e) override; //插入（重写）
+    BinNodePosi<T> insert(const T& e); //插入（重写）
 
     bool remove(const T& e) override; //删除（重写）
 

@@ -27,7 +27,7 @@ public: //基本接口：以virtual修饰，强制要求所有派生类（BST变
 
     virtual BinNodePosi<T> search(const T& e); //查找
 
-    BinNodePosi<T> insert(const T& e) override; //插入
+    BinNodePosi<T> insert(const T& e); //插入
 
     virtual bool remove(const T& e); //删除
 
