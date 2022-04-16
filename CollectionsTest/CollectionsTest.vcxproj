@@ -114,10 +114,17 @@
           <AdditionalIncludeDirectories>C:\Users\93462\cpp\xjhcpp\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.5\build\native\include;</AdditionalIncludeDirectories>
         </ClCompile>
         <ClCompile Include="ListTest.cpp" />
+        <ClCompile Include="StringMatchTest.cpp" />
         <ClCompile Include="VectorTest.cpp" />
     </ItemGroup>
     <ItemGroup>
         <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Collections\Collections.vcxproj">
+        <Project>{114d9584-0293-4282-850a-5784a9cf54b6}</Project>
+        <Name>Collections</Name>
+      </ProjectReference>
     </ItemGroup>
     <ItemDefinitionGroup />
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
